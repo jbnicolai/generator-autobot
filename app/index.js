@@ -12,6 +12,11 @@ var AutobotGenerator = yeoman.generators.Base.extend({
     this.on('end', function () {
       if (!this.options['skip-install']) {
         this.npmInstall();
+        this.installDependencies(function (res) {
+          if (!res) {
+            return;
+          }
+        });
       }
     });
   },
@@ -36,7 +41,7 @@ var AutobotGenerator = yeoman.generators.Base.extend({
     }, {
       type: 'list',
       name: 'jQueryVersion',
-      message: 'What version do you want to include?' + '\n\n' + '(Remember, jQuery 2.x has no support for lte IE8)',
+      message: 'What version do you want to include?' + '\n' + '(Remember, jQuery 2.x has no support for lte IE8)',
       choices: [{
         name: 'jQuery 1.x',
         value: '1x'
@@ -48,12 +53,24 @@ var AutobotGenerator = yeoman.generators.Base.extend({
       when: function (props) {
         return props.includeJQuery;
       }
+    }, {
+      type: 'confirm',
+      name: 'includeModernizr',
+      message: 'Do you want to include Modernizr?',
+      default: true
+    }, {
+      type: 'confirm',
+      name: 'includeAngular',
+      message: 'Do you want to include Angular?',
+      default: true
     }];
 
     this.prompt(prompts, function (props) {
       this.siteName = props.siteName;
       this.includeJQuery = props.includeJQuery;
       this.jQueryVersion = props.jQueryVersion;
+      this.includeModernizr = props.includeModernizr;
+      this.includeAngular = props.includeAngular;
 
       done();
     }.bind(this));
@@ -63,7 +80,7 @@ var AutobotGenerator = yeoman.generators.Base.extend({
 
     this.indexFile = this.readFileAsString(path.join(this.sourceRoot(), 'index.html'));
     this.indexFile = this.engine(this.indexFile, this);
-    
+
     this.mkdir('app');
     this.mkdir('app/styles');
     this.mkdir('app/scripts');

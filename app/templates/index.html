@@ -16,7 +16,10 @@
         <!-- endbuild -->
         <!-- build:css(.tmp) styles/main.css -->
         <link rel="stylesheet" href="styles/main.css">
-        <!-- endbuild -->
+        <!-- endbuild --><% if (includeModernizr) { %>
+        <!-- build:js scripts/vendor/modernizr.js -->
+        <script src="bower_components/modernizr/modernizr.js"></script>
+        <!-- endbuild --><% } %>
     </head>
     <body>
         <!--[if lt IE 10]>
@@ -26,9 +29,11 @@
 
         <!-- build:js scripts/vendor.js -->
         <!-- bower:js -->
-        <% if (includeJQuery) { %><script src="bower_components/jquery/dist/jquery.js"></script><% } %>
+        
         <!-- endbower -->
         <!-- endbuild -->
+        <% if (includeJQuery) { %><script src="bower_components/jquery/dist/jquery.js"></script><% } %>
+        <% if (includeAngular) { %><script src="bower_components/angular/angular.min.js"></script><% } %>
         <!-- Custom JS Files -->
         <!-- build:js({.tmp,app}) scripts/main.js -->
         <script type="text/javascript" src="scripts/main.js"></script>
@@ -42,5 +47,16 @@
             r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
             ga('create','UA-XXXXX-X');ga('send','pageview');
         </script>
+        
+        <!-- build:js scripts/vendor.js -->
+        <!-- bower:js -->
+        <!--[if lt IE 9]>
+        <script src="bower_components/es5-shim/es5-shim.js"></script>
+        <script src="bower_components/es5-shim/dist/html5shiv.js"></script>
+        <script src="bower_components/json3/lib/json3.min.js"></script>
+        <![endif]-->
+        <!-- endbower -->
+        <!-- endbuild -->
+        
     </body>
 </html>
