@@ -1,4 +1,4 @@
-# generator-autobot [![Build Status](https://secure.travis-ci.org/marabyte/generator-autobot.png?branch=master)](https://travis-ci.org/marabyte/generator-autobot)
+# generator-autobot [![Build Status](https://secure.travis-ci.org/Marabyte/generator-autobot.png?branch=master)](https://travis-ci.org/marabyte/generator-autobot)
 
 
 ## Getting Started
@@ -14,7 +14,7 @@ Autobot is Yeoman generator that will, hopefully, help you to setting up your fr
 
 Make sure you have the latest version of [Node](http://nodejs.org/) installed.
 
-Then install Yeoman](http://yeoman.io) using the command line:
+Then install [Yeoman](http://yeoman.io) using the command line:
 
 ```
 $ npm install -g yo
