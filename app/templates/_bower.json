@@ -1,0 +1,10 @@
+{
+  "name": "<%= _.slugify(siteName) %>",
+  "version": "0.0.1",
+  "dependencies": {<% if (includeJQuery) { if (jQueryVersion === '1x') { %>
+	"jquery": "~1.11.0"<% } else { %>
+	"jquery": "~2.1.0"<% }} %>
+  },
+  "devDependencies": {}
+}
+
