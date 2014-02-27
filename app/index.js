@@ -60,12 +60,17 @@ var AutobotGenerator = yeoman.generators.Base.extend({
   },
 
   app: function () {
+
+    this.indexFile = this.readFileAsString(path.join(this.sourceRoot(), 'index.html'));
+    this.indexFile = this.engine(this.indexFile, this);
+    
     this.mkdir('app');
     this.mkdir('app/styles');
     this.mkdir('app/scripts');
     this.mkdir('app/images');
     this.mkdir('app/fonts');
 
+    this.write('app/index.html', this.indexFile);
     this.copy('_package.json', 'package.json');
     this.copy('_bower.json', 'bower.json');
   },

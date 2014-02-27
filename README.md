@@ -1,7 +1,5 @@
 # generator-autobot [![Build Status](https://secure.travis-ci.org/marabyte/generator-autobot.png?branch=master)](https://travis-ci.org/marabyte/generator-autobot)
 
-> [Yeoman](http://yeoman.io) generator
-
 
 ## Getting Started
 
