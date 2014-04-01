@@ -131,6 +131,7 @@ var AutobotGenerator = yeoman.generators.Base.extend({
     this.copy('_bower.json', 'bower.json');
     this.copy('.htaccess', 'app/.htaccess');
     this.copy('jshintrc', '.jshintrc');
+    this.copy('Gruntfile.js', 'Gruntfile.js');
   },
 
   projectfiles: function () {

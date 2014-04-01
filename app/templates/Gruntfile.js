@@ -18,359 +18,380 @@ module.exports = function (grunt) {
   // Define the configuration for all the tasks
   grunt.initConfig({
 
-    // Project settings
-    yeoman: {
-      // Configurable paths
-      app: 'app',
-      dist: 'dist'
-    },
+      // Project settings
+      yeoman: {
+        // Configurable paths
+        app: 'app',
+        dist: 'dist'
+      },
 
-    // Watches files for changes and runs tasks based on the changed files
-    watch: {
-      bower: {
+      // Watches files for changes and runs tasks based on the changed files
+      watch: {
+        bower: {
           files: ['bower.json'],
           tasks: ['bowerInstall']
-      },<% if (includeCoffeeScript) { %>
-      coffee: {
-          files: ['<%%= yeoman.app %>/scripts/{,*/}*.{coffee,litcoffee,coffee.md}'],
-          tasks: ['coffee:dist']
-      },
-      coffeeTest: {
-          files: ['test/spec/{,*/}*.{coffee,litcoffee,coffee.md}'],
-          tasks: ['coffee:test', 'test:watch']
-      },<% } else { %>
-      js: {
-        files: ['<%= yeoman.app %>/scripts/{,*/}*.js'],
-        tasks: ['jshint'],
-        options: {
-          livereload: true
-        }
-      },
-      jstest: {
-        files: ['test/spec/{,*/}*.js'],
-        tasks: ['test:watch']
-      },<% } %>
-      gruntfile: {
-        files: ['Gruntfile.js']
-      },<% if (includeSASS) { %>
-      sass: {
-        files: ['<%= yeoman.app %>/styles/{,*/}*.{scss,sass}'],
-        tasks: ['sass:dev'],
-        options: {
-          livereload: true
-        }
-      },<% } %>
-      styles: {
-        files: ['<%= yeoman.app %>/styles/{,*/}*.css'],
-        tasks: ['newer:copy:styles', 'autoprefixer']
-      },
-      livereload: {
-        options: {
-          livereload: '<%= connect.options.livereload %>'
         },
-        files: [
-          '<%= yeoman.app %>/{,*/}*.html',
-          '.tmp/styles/{,*/}*.css',<% if (includeCoffeeScript) { %>
-          '.tmp/scripts/{,*/}*.js',<% } %>
-          '<%= yeoman.app %>/images/{,*/}*.{gif,jpeg,jpg,png,svg,webp}'
+        <%
+        if (includeCoffeeScript) { %>
+            coffee: {
+              files: ['<%= yeoman.app %>/scripts/{,*/}*.{coffee,litcoffee,coffee.md}'],
+              tasks: ['coffee:dist']
+          },
+          coffeeTest: {
+            files: ['test/spec/{,*/}*.{coffee,litcoffee,coffee.md}'],
+            tasks: ['coffee:test', 'test:watch']
+          },
+          <%
+        } else { %>
+            js: {
+              files: ['<%= yeoman.app %>/scripts/{,*/}*.js'],
+              tasks: ['jshint'],
+              options: {
+                livereload: true
+              }
+          },
+          jstest: {
+            files: ['test/spec/{,*/}*.js'],
+            tasks: ['test:watch']
+          },
+          <%
+        } %> gruntfile: {
+          files: ['Gruntfile.js']
+        },
+        <%
+        if (includeSASS) { %>
+            sass: {
+              files: ['<%= yeoman.app %>/styles/{,*/}*.{scss,sass}'],
+              tasks: ['sass:dev'],
+              options: {
+                livereload: true
+              }
+          },
+          <%
+        } %> styles: {
+          files: ['<%= yeoman.app %>/styles/{,*/}*.css'],
+          tasks: ['newer:copy:styles', 'autoprefixer']
+        },
+        livereload: {
+          options: {
+            livereload: '<%= connect.options.livereload %>'
+          },
+          files: [
+            '<%= yeoman.app %>/{,*/}*.html',
+            '.tmp/styles/{,*/}*.css', <%
+            if (includeCoffeeScript) { %>
+                '.tmp/scripts/{,*/}*.js', <%
+            } %>
+            '<%= yeoman.app %>/images/{,*/}*.{gif,jpeg,jpg,png,svg,webp}'
+          ]
+        }
+      },
+
+      // The actual grunt server settings
+      connect: {
+        options: {
+          port: 9000,
+          livereload: 35729,
+          // Change this to '0.0.0.0' to access the server from outside
+          hostname: 'localhost'
+        },
+        livereload: {
+          options: {
+            open: true,
+            base: [
+              '.tmp',
+              '<%= yeoman.app %>'
+            ]
+          }
+        },
+        test: {
+          options: {
+            port: 9001,
+            base: [
+              '.tmp',
+              'test',
+              '<%= yeoman.app %>'
+            ]
+          }
+        },
+        dist: {
+          options: {
+            open: true,
+            base: '<%= yeoman.app %>',
+            livereload: false
+          }
+        }
+      },
+
+      // Empties folders to start fresh
+      clean: {
+        dist: {
+          files: [{
+            dot: true,
+            src: [
+              '.tmp',
+              '<%= yeoman.app %>/*',
+              '!<%= yeoman.app %>/.git*'
+            ]
+          }]
+        },
+        server: '.tmp'
+      },
+
+      // Make sure code styles are up to par and there are no obvious mistakes
+      jshint: {
+        options: {
+          jshintrc: '.jshintrc',
+          reporter: require('jshint-stylish')
+        },
+        all: [
+          'Gruntfile.js',
+          '<%= yeoman.app %>/scripts/{,*/}*.js',
+          '!<%= yeoman.app %>/scripts/vendor/*',
+          'test/spec/{,*/}*.js'
         ]
-      }
-    },
-
-    // The actual grunt server settings
-    connect: {
-      options: {
-        port: 9000,
-        livereload: 35729,
-        // Change this to '0.0.0.0' to access the server from outside
-        hostname: 'localhost'
       },
-      livereload: {
-        options: {
-          open: true,
-          base: [
-            '.tmp',
-            '<%= yeoman.app %>'
-          ]
+
+
+      // Mocha testing framework configuration options
+      mocha: {
+        all: {
+          options: {
+            run: true,
+            urls: ['http://<%= connect.test.options.hostname %>:<%= connect.test.options.port %>/index.html']
+          }
         }
       },
-      test: {
-        options: {
-          port: 9001,
-          base: [
-            '.tmp',
-            'test',
-            '<%= yeoman.app %>'
-          ]
-        }
-      },
-      dist: {
-        options: {
-          open: true,
-          base: '<%= yeoman.app %>',
-          livereload: false
-        }
-      }
-    },
+      <%
+    } %> <%
+    if (includeCoffeeScript) { %>
 
-    // Empties folders to start fresh
-    clean: {
-      dist: {
-        files: [{
-          dot: true,
-          src: [
-            '.tmp',
-            '<%= yeoman.app %>/*',
-            '!<%= yeoman.app %>/.git*'
-          ]
-        }]
-      },
-      server: '.tmp'
-    },
-
-    // Make sure code styles are up to par and there are no obvious mistakes
-    jshint: {
-      options: {
-        jshintrc: '.jshintrc',
-        reporter: require('jshint-stylish')
-      },
-      all: [
-        'Gruntfile.js',
-        '<%= yeoman.app %>/scripts/{,*/}*.js',
-        '!<%= yeoman.app %>/scripts/vendor/*',
-        'test/spec/{,*/}*.js'
-      ]
-    },
-
-
-    // Mocha testing framework configuration options
-    mocha: {
-      all: {
-        options: {
-          run: true,
-          urls: ['http://<%= connect.test.options.hostname %>:<%= connect.test.options.port %>/index.html']
-        }
-      }
-    },<% } %><% if (includeCoffeeScript) { %>
-
-    // Compiles CoffeeScript to JavaScript
-    coffee: {
-      dist: {
+      // Compiles CoffeeScript to JavaScript
+      coffee: {
+        dist: {
           files: [{
-              expand: true,
-              cwd: '<%%= config.app %>/scripts',
-              src: '{,*/}*.{coffee,litcoffee,coffee.md}',
-              dest: '.tmp/scripts',
-              ext: '.js'
+            expand: true,
+            cwd: '<%= config.app %>/scripts',
+            src: '{,*/}*.{coffee,litcoffee,coffee.md}',
+            dest: '.tmp/scripts',
+            ext: '.js'
           }]
-      },
-      test: {
+        },
+        test: {
           files: [{
-              expand: true,
-              cwd: 'test/spec',
-              src: '{,*/}*.{coffee,litcoffee,coffee.md}',
-              dest: '.tmp/spec',
-              ext: '.js'
+            expand: true,
+            cwd: 'test/spec',
+            src: '{,*/}*.{coffee,litcoffee,coffee.md}',
+            dest: '.tmp/spec',
+            ext: '.js'
           }]
-      }
-    },<% } %><% if (includeSASS) { %>
-
-    // Grunt-SASS + node-bourbon
-    sass: {
-      dev: {
-        files: {
-          '<%= yeoman.app %>/css/styles.css': '<%= yeoman.app %>/css/styles.scss'
         }
-    },<% } %>
-
-    cdnify: {
-      dist: {
-        html: ['app/*.html']
-      }
-    },
-
-    // Add vendor prefixed styles
-    autoprefixer: {
-      options: {
-        browsers: ['last 2 versions', 'ie 8', 'ie 9']
       },
-      dist: {
-        files: [{
+      <%
+    } %> <%
+    if (includeSASS) { %>
+
+      // Grunt-SASS + node-bourbon
+      sass: {
+        dev: {
+          files: {
+            '<%= yeoman.app %>/css/styles.css': '<%= yeoman.app %>/css/styles.scss'
+          }
+        },
+        <%
+      } %>
+
+      cdnify: {
+        dist: {
+          html: ['app/*.html']
+        }
+      },
+
+      // Add vendor prefixed styles
+      autoprefixer: {
+        options: {
+          browsers: ['last 2 versions', 'ie 8', 'ie 9']
+        },
+        dist: {
+          files: [{
+            expand: true,
+            cwd: '<%= yeoman.app %>/styles/',
+            src: '{,*/}*.css',
+            dest: '<%= yeoman.app %>/styles/'
+          }]
+        }
+      },
+
+      // Automatically inject Bower components into the HTML file
+      'bower-install': {
+        app: {
+          html: '<%= yeoman.app %>/index.html',
+          ignorePath: '<%= yeoman.app %>/'
+        }
+      },
+
+      // Renames files for browser caching purposes
+      rev: {
+        dist: {
+          files: {
+            src: [
+              '<%= yeoman.app %>/scripts/{,*/}*.js',
+              '<%= yeoman.app %>/styles/{,*/}*.css',
+              '<%= yeoman.app %>/images/{,*/}*.{gif,jpeg,jpg,png,webp}',
+              '<%= yeoman.app %>/styles/fonts/{,*/}*.*'
+            ]
+          }
+        }
+      },
+
+      // Reads HTML for usemin blocks to enable smart builds that automatically
+      // concat, minify and revision files. Creates configurations in memory so
+      // additional tasks can operate on them
+      useminPrepare: {
+        options: {
+          dest: '<%= yeoman.app %>'
+        },
+        html: '<%= yeoman.app %>/index.html'
+      },
+
+      // Performs rewrites based on rev and the useminPrepare configuration
+      usemin: {
+        options: {
+          assetsDirs: ['<%= yeoman.app %>', '<%= yeoman.app %>/images']
+        },
+        html: ['<%= yeoman.app %>/{,*/}*.html'],
+        css: ['<%= yeoman.app %>/styles/{,*/}*.css']
+      },
+
+      // The following *-min tasks produce minified files in the dist folder
+      imagemin: {
+        dist: {
+          files: [{
+            expand: true,
+            cwd: '<%= yeoman.app %>/images',
+            src: '{,*/}*.{gif,jpeg,jpg,png}',
+            dest: '<%= yeoman.app %>/images'
+          }]
+        }
+      },
+      svgmin: {
+        dist: {
+          files: [{
+            expand: true,
+            cwd: '<%= yeoman.app %>/images',
+            src: '{,*/}*.svg',
+            dest: '<%= yeoman.app %>/images'
+          }]
+        }
+      },
+      cssmin: {
+        dist: {
+          files: [{
+            expand: true,
+            cwd: '<%= yeoman.app %>/styles/',
+            src: '{,*/}*.css',
+            dest: '<%= yeoman.app %>/styles/'
+          }]
+        }
+      },
+      htmlmin: {
+        dist: {
+          options: {
+            collapseBooleanAttributes: true,
+            collapseWhitespace: true,
+            removeAttributeQuotes: true,
+            removeCommentsFromCDATA: true,
+            removeEmptyAttributes: true,
+            removeOptionalTags: true,
+            removeRedundantAttributes: true,
+            useShortDoctype: true
+          },
+          files: [{
+            expand: true,
+            cwd: '<%= yeoman.app %>',
+            src: '{,*/}*.html',
+            dest: '<%= yeoman.app %>'
+          }]
+        }
+      },
+
+      // By default, your `index.html`'s <!-- Usemin block --> will take care of
+      // minification. These next options are pre-configured if you do not wish
+      // to use the Usemin blocks.
+      // uglify: {
+      //     dist: {
+      //         files: {
+      //             '<%= yeoman.app %>/scripts/scripts.js': [
+      //                 '<%= yeoman.app %>/scripts/scripts.js'
+      //             ]
+      //         }
+      //     }
+      // },
+      // concat: {
+      //     dist: {}
+      // },
+
+      // Copies remaining files to places other tasks can use
+      copy: {
+        dist: {
+          files: [{
+            expand: true,
+            dot: true,
+            cwd: '<%= yeoman.app %>',
+            dest: '<%= yeoman.app %>',
+            src: [
+              '*.{ico,png,txt}',
+              '.htaccess',
+              'images/{,*/}*.webp',
+              '{,*/}*.html',
+              '.tmp/styles/{,*/}*.css',
+              'styles/fonts/{,*/}*.*'
+            ]
+          }]
+        },
+        styles: {
           expand: true,
-          cwd: '<%= yeoman.app %>/styles/',
-          src: '{,*/}*.css',
-          dest: '<%= yeoman.app %>/styles/'
-        }]
-      }
-    },
+          dot: true,
+          cwd: '<%= yeoman.app %>/styles',
+          dest: '.tmp/styles/',
+          src: '{,*/}*.css'
+        }
+      },
 
-    // Automatically inject Bower components into the HTML file
-    'bower-install': {
-      app: {
-        html: '<%= yeoman.app %>/index.html',
-        ignorePath: '<%= yeoman.app %>/'
-      }
-    },
-
-    // Renames files for browser caching purposes
-    rev: {
-      dist: {
-        files: {
-          src: [
+      <%
+      if (includeModernizr) { %>
+        // Generates a custom Modernizr build that includes only the tests you
+        // reference in your app
+        modernizr: {
+          devFile: '<%= yeoman.app %>/bower_components/modernizr/modernizr.js',
+          outputFile: '<%= yeoman.app %>/bower_components/modernizr/modernizr.js',
+          files: [
             '<%= yeoman.app %>/scripts/{,*/}*.js',
             '<%= yeoman.app %>/styles/{,*/}*.css',
-            '<%= yeoman.app %>/images/{,*/}*.{gif,jpeg,jpg,png,webp}',
-            '<%= yeoman.app %>/styles/fonts/{,*/}*.*'
-          ]
-        }
-      }
-    },
-
-    // Reads HTML for usemin blocks to enable smart builds that automatically
-    // concat, minify and revision files. Creates configurations in memory so
-    // additional tasks can operate on them
-    useminPrepare: {
-      options: {
-        dest: '<%= yeoman.app %>'
-      },
-      html: '<%= yeoman.app %>/index.html'
-    },
-
-    // Performs rewrites based on rev and the useminPrepare configuration
-    usemin: {
-      options: {
-        assetsDirs: ['<%= yeoman.app %>', '<%= yeoman.app %>/images']
-      },
-      html: ['<%= yeoman.app %>/{,*/}*.html'],
-      css: ['<%= yeoman.app %>/styles/{,*/}*.css']
-    },
-
-    // The following *-min tasks produce minified files in the dist folder
-    imagemin: {
-      dist: {
-        files: [{
-          expand: true,
-          cwd: '<%= yeoman.app %>/images',
-          src: '{,*/}*.{gif,jpeg,jpg,png}',
-          dest: '<%= yeoman.app %>/images'
-        }]
-      }
-    },
-    svgmin: {
-      dist: {
-        files: [{
-          expand: true,
-          cwd: '<%= yeoman.app %>/images',
-          src: '{,*/}*.svg',
-          dest: '<%= yeoman.app %>/images'
-        }]
-      }
-    },
-    cssmin: {
-      dist: {
-        files: [{
-          expand: true,
-          cwd: '<%= yeoman.app %>/styles/',
-          src: '{,*/}*.css',
-          dest: '<%= yeoman.app %>/styles/'
-        }]
-      }
-    },
-    htmlmin: {
-      dist: {
-        options: {
-          collapseBooleanAttributes: true,
-          collapseWhitespace: true,
-          removeAttributeQuotes: true,
-          removeCommentsFromCDATA: true,
-          removeEmptyAttributes: true,
-          removeOptionalTags: true,
-          removeRedundantAttributes: true,
-          useShortDoctype: true
+            '!<%= yeoman.app %>/scripts/vendor/*'
+          ],
+          uglify: true
         },
-        files: [{
-          expand: true,
-          cwd: '<%= yeoman.app %>',
-          src: '{,*/}*.html',
-          dest: '<%= yeoman.app %>'
-        }]
+        <%
+      } %>
+
+      // Run some tasks in parallel to speed up build process
+      concurrent: {
+        server: [
+          'copy:styles',
+          'sass:dev',
+          'compress:main'
+        ],
+        test: [
+          'copy:styles'
+        ],
+        dist: [
+          'copy:styles',
+          'imagemin',
+          'svgmin'
+        ]
       }
-    },
-
-    // By default, your `index.html`'s <!-- Usemin block --> will take care of
-    // minification. These next options are pre-configured if you do not wish
-    // to use the Usemin blocks.
-    // uglify: {
-    //     dist: {
-    //         files: {
-    //             '<%= yeoman.app %>/scripts/scripts.js': [
-    //                 '<%= yeoman.app %>/scripts/scripts.js'
-    //             ]
-    //         }
-    //     }
-    // },
-    // concat: {
-    //     dist: {}
-    // },
-
-    // Copies remaining files to places other tasks can use
-    copy: {
-      dist: {
-        files: [{
-          expand: true,
-          dot: true,
-          cwd: '<%= yeoman.app %>',
-          dest: '<%= yeoman.app %>',
-          src: [
-            '*.{ico,png,txt}',
-            '.htaccess',
-            'images/{,*/}*.webp',
-            '{,*/}*.html',
-            '.tmp/styles/{,*/}*.css',
-            'styles/fonts/{,*/}*.*'
-          ]
-        }]
-      },
-      styles: {
-        expand: true,
-        dot: true,
-        cwd: '<%= yeoman.app %>/styles',
-        dest: '.tmp/styles/',
-        src: '{,*/}*.css'
-      }
-    },
-
-    <% if (includeModernizr) { %>
-    // Generates a custom Modernizr build that includes only the tests you
-    // reference in your app
-    modernizr: {
-      devFile: '<%= yeoman.app %>/bower_components/modernizr/modernizr.js',
-      outputFile: '<%= yeoman.app %>/bower_components/modernizr/modernizr.js',
-      files: [
-        '<%= yeoman.app %>/scripts/{,*/}*.js',
-        '<%= yeoman.app %>/styles/{,*/}*.css',
-        '!<%= yeoman.app %>/scripts/vendor/*'
-      ],
-      uglify: true
-    },<% } %>
-
-    // Run some tasks in parallel to speed up build process
-    concurrent: {
-      server: [
-        'copy:styles',
-        'sass:dev',
-        'compress:main'
-      ],
-      test: [
-        'copy:styles'
-      ],
-      dist: [
-        'copy:styles',
-        'imagemin',
-        'svgmin'
-      ]
-    }
-  });
+    });
 
   grunt.registerTask('serve', function (target) {
     if (target === 'dist') {
