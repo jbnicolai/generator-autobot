@@ -1,0 +1,2 @@
+<% if (includeJQuery) { %>$(document).ready ->
+<% } %>

@@ -1,0 +1,5 @@
+/*
+app.directive('myDirective', function() {
+
+});
+*/

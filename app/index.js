@@ -63,6 +63,16 @@ var AutobotGenerator = yeoman.generators.Base.extend({
       name: 'includeAngular',
       message: 'Do you want to include Angular?',
       default: true
+    }, {
+      type: 'confirm',
+      name: 'includeCoffeeScript',
+      message: 'Do you want to include CoffeeScript?',
+      default: true
+    }, {
+      type: 'confirm',
+      name: 'includeSASS',
+      message: 'Do you want to include SASS?',
+      default: true
     }];
 
     this.prompt(prompts, function (props) {
@@ -71,6 +81,8 @@ var AutobotGenerator = yeoman.generators.Base.extend({
       this.jQueryVersion = props.jQueryVersion;
       this.includeModernizr = props.includeModernizr;
       this.includeAngular = props.includeAngular;
+      this.includeCoffeeScript = props.includeCoffeeScript;
+      this.includeSASS = props.includeSASS;
 
       done();
     }.bind(this));
@@ -87,9 +99,38 @@ var AutobotGenerator = yeoman.generators.Base.extend({
     this.mkdir('app/images');
     this.mkdir('app/fonts');
 
+    if (this.includeCoffeeScript) {
+      this.copy('main.coffee', 'app/scripts/main.coffee');
+      if (this.includeAngular) {
+        this.copy('app.coffee', 'app/scripts/app.coffee');
+        this.copy('directives.coffee', 'app/scripts/directives.coffee');
+        this.copy('controllers.coffee', 'app/scripts/controllers.coffee');
+        this.write('app/scripts/services.coffee',
+          'app/scripts/filters.coffee');
+      }
+    } else {
+      this.copy('main.js', 'app/scripts/main.js');
+      if (this.includeAngular) {
+        this.copy('app.js', 'app/scripts/app.js');
+        this.copy('directives.js', 'app/scripts/directives.js');
+        this.copy('controllers.js', 'app/scripts/controllers.js');
+        this.write('app/scripts/services.js',
+          'app/scripts/filters.js');
+      }
+    }
+
+    if (this.includeSASS) {
+      this.copy('styles.scss', 'app/styles/styles.scss');
+      this.copy('reset.scss', 'app/styles/reset.scss');
+    } else {
+      this.copy('styles.css', 'app/styles/styles.css');
+    }
+
     this.write('app/index.html', this.indexFile);
     this.copy('_package.json', 'package.json');
     this.copy('_bower.json', 'bower.json');
+    this.copy('.htaccess', 'app/.htaccess');
+    this.copy('jshintrc', '.jshintrc');
   },
 
   projectfiles: function () {

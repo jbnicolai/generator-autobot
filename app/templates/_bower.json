@@ -6,7 +6,7 @@
   	"angular": "~1.2.11",<% } if (includeJQuery) { if (jQueryVersion === '1x') { %>
 	"jquery": "~1.11.0",<% } else { %>
 	"jquery": "~2.1.0",<% }} %>
-	"es5-shim": "~2.1.0",<% }} if (includeModernizr) { %>
+	"es5-shim": "~2.1.0",<% if (includeModernizr) { %>
   "modernizr": "~2.6.2",<% } %>
 	"json3": "~3.2.6",
 	"html5shiv": "latest"
